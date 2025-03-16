@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Add jQuery -->
+    <style>
+        body {
+            background: url('./img/276.jpg') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: black;
+        }
+
+        .quiz-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            color: black;
+        }
+
+        .btn-option {
+            width: 100%;
+            border: 2px solid black !important;
+            color: black;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .selected {
+            background: blue !important;
+            border-color: blue !important;
+            color: white !important;
+        }
+
+        #next-btn {
+            border: 2px solid black !important;
+            background: white;
+            color: black;
+            font-weight: bold;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        #next-btn:hover {
+            background: orangered !important;
+            border-color: orangered !important;
+            color: white;
+        }
+
+        .result-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            width: 40%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .result-container h2 {
+            color: green;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .result-container p {
+            font-size: 18px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .timer {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="quiz-container" id="quiz-container">
+        <div class="top-bar">
+            <span id="question-number">1/10</span>
+            <span class="timer">&#8987;Time Left: <span id="timer">30</span>s</span>
+        </div>
+        <div id="question-container"></div>
+        <div id="options-container" class="options-container"></div>
+        <button id="next-btn" class="btn btn-primary mt-3 hidden" onclick="nextQuestion()">Next</button>
+        <button id="show-results-btn" class="btn btn-success mt-3 hidden" onclick="showResults()">Show Results</button>
+    </div>
+    <div id="result-container" class="result-container hidden">
+        <h2>Quiz Completed!</h2>
+        <p><strong>Score:</strong> <span id="final-score"></span></p>
+        <p><strong>Attempted Questions:</strong> <span id="attempted"></span></p>
+        <p><strong>Correct Answers:</strong> <span id="correct"></span></p>
+        <p><strong>Wrong Answers:</strong> <span id="incorrect"></span></p>
+        <p id="performance-message" class="mt-3"></p>
+        <button class="btn btn-danger mt-3" onclick="exitQuiz()">Exit</button>
+    </div>
+    <script>
+        let questions = [
+            { question: "What is the method to remove an item from a list by value in Python?", options: ["remove()", "pop()", "del", "clear()"], answer: "remove()" },
+            { question: "How do you define a dictionary in Python?", options: ["[]", "{}", "()", "<>"], answer: "{}" },
+            { question: "What is the output of print(type('5'))?", options: ["int", "float", "str", "bool"], answer: "str" },
+            { question: "Which method is used to convert a string to lowercase?", options: ["lowercase()", "toLowerCase()", "lower()", "down()"], answer: "lower()" },
+            { question: "Which of the following is the correct way to declare a class in Python?", options: ["class MyClass():", "class MyClass:", "class MyClass[]", "MyClass = class()"], answer: "class MyClass:" },
+            { question: "What is the default return value of a function that does not have a return statement?", options: ["None", "0", "False", "Error"], answer: "None" },
+            { question: "Which of the following methods can be used to add an element at the end of a list?", options: ["append()", "insert()", "extend()", "add()"], answer: "append()" },
+            { question: "What is the output of the expression '10' + 2?", options: ["12", "102", "Error", "12.0"], answer: "Error" },
+            { question: "Which function can be used to get the length of a list in Python?", options: ["length()", "size()", "len()", "count()"], answer: "len()" },
+            { question: "Which of the following is a valid set in Python?", options: ["{1, 2, 3}", "[1, 2, 3]", "(1, 2, 3)", "<1, 2, 3>"], answer: "{1, 2, 3}" }
+        ];
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        shuffle(questions);
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let attempted = 0;
+        let correct = 0;
+        let incorrect = 0;
+        let timer;
+        let timeLeft = 30;
+
+        function loadQuestion() {
+            let questionObj = questions[currentQuestionIndex];
+            document.getElementById("question-container").innerHTML = `<h3>${questionObj.question}</h3>`;
+            document.getElementById("options-container").innerHTML = questionObj.options.map((option, index) =>
+                `<button class='btn btn-option' onclick='selectAnswer(${index})'>${option}</button>`
+            ).join("");
+            document.getElementById("question-number").innerText = `${currentQuestionIndex + 1}/${questions.length}`;
+            resetTimer();
+        }
+
+        function selectAnswer(index) {
+            let selectedOption = questions[currentQuestionIndex].options[index];
+            let correctAnswer = questions[currentQuestionIndex].answer;
+            attempted++;
+
+            const options = document.querySelectorAll('.btn-option');
+            options.forEach(option => option.classList.remove('selected'));
+
+            options[index].classList.add('selected');
+
+            if (selectedOption === correctAnswer) {
+                score += 10;
+                correct++;
+            } else {
+                incorrect++;
+            }
+            document.getElementById("next-btn").classList.remove("hidden");
+            clearInterval(timer);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+                document.getElementById("next-btn").classList.add("hidden");
+            } else {
+
+                document.getElementById("show-results-btn").classList.remove("hidden");
+                document.getElementById("next-btn").classList.add("hidden"); 
+            }
+        }
+
+        function showResults() {
+            document.getElementById("quiz-container").classList.add("hidden");
+            $("#result-container").removeClass("hidden").hide().slideDown(); // Use jQuery to slide down
+            document.getElementById("final-score").innerText = score;
+            document.getElementById("attempted").innerText = attempted;
+            document.getElementById("correct").innerText = correct;
+            document.getElementById("incorrect").innerText = incorrect;
+
+            let performanceMessage = "";
+            if (score >= 80) {
+                performanceMessage = "🎉😍Great job! You have a strong understanding of Python.😍🎉";
+            } else if (score >= 50) {
+                performanceMessage = "😍🙌Good effort! A little more practice will help you improve.🙌😍";
+            } else {
+                performanceMessage = "☺️☺️Keep trying! Review the material and take the quiz again.☺️☺️";
+            }
+            document.getElementById("performance-message").innerText = performanceMessage;
+        }
+
+        function exitQuiz() {
+            window.location.href = "Selection.html"; 
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timeLeft = 30;
+            document.getElementById("timer").innerText = timeLeft;
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    nextQuestion();
+                }
+            }, 1000);
+        }
+
+        loadQuestion();
+    </script>
+</body>
+
+</html>

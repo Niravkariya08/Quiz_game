@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Difficulty Selection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('./img/276.jpg') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .card-container {
+            display: flex;
+            gap: 20px;
+        }
+        .card {
+            width: 250px;
+            text-align: center;
+        }
+        .navbar{
+            font-size: 30px;
+            background: transparent !important;
+            font-family: cursive;
+        }
+        .navbar-brand{
+            font-size: 40px;
+        }
+        .navbar-brand::first-letter{    
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: 50px;
+            color:red;
+            text-shadow: 5px 8px 9px cyan;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <h1 class="navbar-brand" href="home.html">Quiz</h1>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="./Selection.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./About.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container content">
+        <div class="card-container">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Easy Questions</h5>
+                    <p class="card-text">Start with basic questions.</p>
+                    <a href="js_easy.html" class="btn btn-light">Start</a>
+                </div>
+            </div>
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Medium Questions</h5>
+                    <p class="card-text">Take on a challenge.</p>
+                    <a href="js_medium.html" class="btn btn-light">Start</a>
+                </div>
+            </div>
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Hard Questions</h5>
+                    <p class="card-text">Test your expertise.</p>
+                    <a href="js_hard.html" class="btn btn-light">Start</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

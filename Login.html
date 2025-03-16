@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup</title>
+    <link rel="stylesheet" href="login.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form>
+                <h1>Create Account</h1>
+                <span>or use your email for registration</span>
+                <input type="text" placeholder="Name" id="name" />
+                <input type="email" placeholder="Email" id="email" />
+                <input type="password" placeholder="Password" id="password" />
+                <button type="button" onclick="validformup()">Sign Up</button>
+            </form>
+        </div>
+
+        <div class="form-container sign-in-container">
+            <form>
+                <h1>Sign In</h1>
+                <span>or use your account</span>
+                <input type="email" placeholder="Email" id="email1" />
+                <input type="password" placeholder="Password" id="password1" />
+                <a href="#" id="Forgot">Forgot your password?</a>
+                <button type="button" onclick="validformin()">Sign In</button>
+            </form>
+        </div>
+        <script>
+            $(document).ready(function () {
+                $("#Forgot").hover(
+                    function () {
+                        alert("Password recovery is not available at the moment.");
+                    },
+                    function () {
+                        $(this).css("background-color", "white"); // Mouse Leave
+                    }
+                );
+            });
+        </script>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Welcome Back!</h1>
+                    <p>To keep connected with us, please log in with your personal info.</p>
+                    <button class="ghost" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello, Friend!</h1>
+                    <p>Enter your personal details and start your journey with us.</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sign Up Validation
+        function validformup() {
+            var name = document.getElementById("name").value.trim();
+            var email = document.getElementById("email").value.trim();
+            var password = document.getElementById("password").value.trim();
+
+            if (name === "") {
+                alert("Please enter your name.");
+                return false;
+            } else if (!name.match(/^[a-zA-Z\-]+$/)) {
+                alert("Please enter a valid name (letters and hyphens only).");
+                return false;
+            }
+
+            if (email === "") {
+                alert("Please enter your email.");
+                return false;
+            } else if (!email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
+                alert("Please enter a valid email (example@domain.com).");
+                return false;
+            }
+
+            if (password === "") {
+                alert("Please enter your password.");
+                return false;
+            } else if (password.length < 6) {
+                alert("Password must be at least 6 characters long.");
+                return false;
+            }
+
+            alert("Sign-up successful!");
+            window.location.href = 'home.html';
+            return true;
+        }
+
+        // Sign In Validation
+        function validformin() {
+            var email = document.getElementById("email1").value.trim();
+            var password = document.getElementById("password1").value.trim();
+
+            if (email === "") {
+                alert("Please enter your email.");
+                return false;
+            } else if (!email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
+                alert("Please enter a valid email (example@domain.com).");
+                return false;
+            }
+
+            if (password === "") {
+                alert("Please enter your password.");
+                return false;
+            }
+
+            alert("Login successful!");
+            window.location.href = 'home.html';
+            return true;
+        }
+
+
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('container');
+
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+        });
+
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
+    </script>
+</body>
+
+</html>
